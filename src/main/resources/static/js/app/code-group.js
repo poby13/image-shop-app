@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $("#codeGroupListId").click(function () {
-        console.log("codeGroupList")
+        console.log("codeGroupList");
     })
 
     $("#codeGroupReadId").click(function () {
@@ -8,7 +8,23 @@ $(document).ready(function() {
     })
 
     $("#codeGroupRegisterId").click(function () {
-        console.log("codeGroupRegister")
+        const codeGroupObj = {
+            groupCode: $("#groupCodeId").val(),
+            groupName: $("#groupNameId").val(),
+        };
+
+        console.log(JSON.stringify(codeGroupObj));
+
+        fetch('/codegroups', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(codeGroupObj)
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
     })
 
     $("#codeGroupDeleteId").click(function () {
