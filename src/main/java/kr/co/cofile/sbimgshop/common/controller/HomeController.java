@@ -20,4 +20,9 @@ public class HomeController {
 
         return "common/home";
     }
+
+    @GetMapping("/codegroups/form")
+    public String form() {
+        return "codegroups/home";
+    }
 }

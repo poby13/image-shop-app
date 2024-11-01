@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Code Groups Home</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+<h1>Code Group</h1>
+
+<table>
+    <tr>
+        <td><label for="groupCodeId"></label></td>
+        <td><input type="text" id="groupCodeId" name="groupCode" placeholder="Group Code"></td>
+    </tr>
+    <tr>
+        <td><label for="groupNameId"></label></td>
+        <td><input type="text" id="groupNameId" name="groupName" placeholder="Group Name"></td>
+    </tr>
+</table>
+
+<div>
+    <button th:text="#{common.post.list}" id="codeGroupListId">List</button>
+    <button th:text="#{common.post.read}" id="codeGroupReadId">Read</button>
+    <button th:text="#{common.post.register}" id="codeGroupRegisterId">Register</button>
+    <button th:text="#{common.post.delete}" id="codeGroupDeleteId">Delete</button>
+    <button th:text="#{common.post.modify}" id="codeGroupModifyId">Modify</button>
+    <button th:text="#{common.post.reset}" id="codeGroupResetId">Reset</button>
+</div>
+
+<!-- JavaScript 파일들 -->
+<script th:src="@{/js/libs/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/app/code-group.js}"></script>
+</body>
+</html>
