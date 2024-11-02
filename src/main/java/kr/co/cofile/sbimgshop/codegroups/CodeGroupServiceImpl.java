@@ -1,6 +1,9 @@
 package kr.co.cofile.sbimgshop.codegroups;
 
+import kr.co.cofile.sbimgshop.common.exception.BusinessException;
+import kr.co.cofile.sbimgshop.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +16,11 @@ public class CodeGroupServiceImpl implements CodeGroupService {
     @Override
     public void register(CodeGroupDTO codeGroupDTO) {
         // TODO DuplicateKeyException
-        codeGroupMapper.create(codeGroupDTO);
+        try {
+            codeGroupMapper.create(codeGroupDTO);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException(ErrorCode.DUPLICATE_KEY, e);
+        }
     }
 
 }
