@@ -21,19 +21,19 @@ $(document).ready(function () {
 
         // 그룹 코드 검사
         if (!groupCode) {
-            errors.groupCode = "그룹 코드는 필수 입력값입니다.";
+            errors.groupCode = messages.required.groupCode;
             hasError = true;
         } else if (groupCode.length !== 3) {
-            errors.groupCode = "그룹 코드는 3자리여야 합니다.";
+            errors.groupCode = messages.size.groupCode;
             hasError = true;
         }
 
         // 그룹명 검사
         if (!groupName) {
-            errors.groupName = "그룹명은 필수 입력값입니다.";
+            errors.groupName = messages.required.groupName;
             hasError = true;
         } else if (groupName.length !== 3) {
-            errors.groupName = "그룹명은 3자리여야 합니다.";
+            errors.groupName = messages.size.groupName;
             hasError = true;
         }
 
@@ -73,7 +73,7 @@ $(document).ready(function () {
                     showErrors(error.errors);
                 } else {
                     // 일반적인 에러 처리
-                    alert(error.message || '처리 중 오류가 발생했습니다.');
+                    alert(error.message || messages.process.fail);
                 }
             });
     })
@@ -99,10 +99,10 @@ $(document).ready(function () {
         // 입력값이 변경될 때마다 해당 필드의 유효성 검사
         if (!value) {
             $(this).addClass('is-invalid');
-            errorElement.text(`${field === 'groupCode' ? '그룹 코드' : '그룹명'}는 필수 입력값입니다.`).show();
+            errorElement.text(`${field === 'groupCode' ? messages.required.groupCode : messages.required.groupName}`).show();
         } else if (value.length !== 3) {
             $(this).addClass('is-invalid');
-            errorElement.text(`${field === 'groupCode' ? '그룹 코드' : '그룹명'}는 3자리여야 합니다.`).show();
+            errorElement.text(`${field === 'groupCode' ? messages.size.groupCode : messages.size.groupName}`).show();
         } else {
             $(this).removeClass('is-invalid');
             errorElement.hide().text('');
