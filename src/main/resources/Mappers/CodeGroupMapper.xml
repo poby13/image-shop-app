@@ -46,7 +46,7 @@
         </if>
     </sql>
 
-    <select id="findByCondition" resultType="kr.co.cofile.sbimgshop.codegroups.CodeGroupDTO">
+    <select id="selectByCondition" resultType="kr.co.cofile.sbimgshop.codegroups.CodeGroupDTO">
         SELECT * FROM code_group
         <include refid="searchCondition"/>
         <!-- SQL 인젝션 취약점 해결 -->

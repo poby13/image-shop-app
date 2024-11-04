@@ -38,6 +38,35 @@ $(document).ready(function () {
 
     $("#codeGroupReadId").click(function () {
         console.log("codeGroupRead")
+
+        // 입력값 가져오기
+        const groupCode = $("#groupCodeId").val().trim();
+
+        fetch(`/codegroups/${groupCode}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw errorData;
+                    })
+                }
+                return response.json()
+            })
+            .then(data => console.log(data))
+            .catch(error => {
+                console.error('Error:', error);
+                if (error.errors) {
+                    showErrors(error.errors);
+                } else {
+                    // 일반적인 에러 처리
+                    alert(error.message || messages.process.fail);
+                }
+            });
     })
 
     $("#codeGroupRegisterId").click(function () {

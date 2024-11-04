@@ -25,6 +25,7 @@ public enum ErrorCode {
     DUPLICATE_KEY(400, "D002", "Duplicate Key Found"),
     DATA_INTEGRITY_VIOLATION(400, "D003", "Data Integrity Violation"),
     MYBATIS_MAPPING_ERROR(500, "D004", "MyBatis Mapping Error"),
+    NO_DATA_FOUND (404, "D005", "No Data Found"),
 
     // File Upload Errors (400)
     FILE_SIZE_EXCEED(400, "F001", "File Size Exceeds Maximum Limit"),

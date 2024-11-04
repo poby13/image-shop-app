@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class CodeGroupsTest {
             codeGroupDTO.setGroupName(groupName);
 
             if (!codeGroupMapper.exists(groupCode)) {
-                codeGroupMapper.create(codeGroupDTO);
+                codeGroupMapper.insert(codeGroupDTO);
                 log.info("코드그룹: {}, 코드이름: {}", groupCode, groupName);
             } else {
                 log.warn("코드그룹이 존재하여 스킵: {}", groupCode);
@@ -54,7 +53,7 @@ public class CodeGroupsTest {
     // 벌크 데이터 삭제를 위한 메소드 추가
     @Test
     void cleanupCodeGroups() {
-        List<CodeGroupDTO> codeGroups = codeGroupMapper.findAll();
+        List<CodeGroupDTO> codeGroups = codeGroupMapper.selectAll();
         for (CodeGroupDTO group : codeGroups) {
             codeGroupMapper.delete(group.getGroupCode());
         }

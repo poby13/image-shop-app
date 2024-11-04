@@ -17,10 +17,10 @@ public class CodeGroupServiceImpl implements CodeGroupService {
 
 
     @Override
-    public void register(CodeGroupDTO codeGroupDTO) {
+    public void createCodeGroup(CodeGroupDTO codeGroupDTO) {
         // TODO DuplicateKeyException
         try {
-            codeGroupMapper.create(codeGroupDTO);
+            codeGroupMapper.insert(codeGroupDTO);
         } catch (DuplicateKeyException e) {
             throw new BusinessException(ErrorCode.DUPLICATE_KEY, e);
         }
@@ -36,7 +36,7 @@ public class CodeGroupServiceImpl implements CodeGroupService {
                 //.groupCode("001")
                 .build();
 
-        List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.findByCondition(condition, offset, size);
+        List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.seletByCondition(condition, offset, size);
 
         return PageDTO.<CodeGroupDTO>builder()
                 .page(page)
@@ -47,4 +47,31 @@ public class CodeGroupServiceImpl implements CodeGroupService {
                 .build();
     }
 
+    @Override
+    public PageDTO getCodeGroups(String codeGroup, String codeName, int page, int size) {
+        int offset = (page - 1) * size;
+        int totalElements = codeGroupMapper.countTotal();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+
+        CodeGroupSearchCondition condition = CodeGroupSearchCondition.builder()
+                .groupCode(codeGroup)
+                .groupName(codeName)
+                .build();
+
+        List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.seletByCondition(condition, offset, size);
+
+        return PageDTO.<CodeGroupDTO>builder()
+                .page(page)
+                .size(size)
+                .totalPages(totalPages)
+                .totalElements(totalElements)
+                .content(codeGroupDTOS)
+                .build();
+    }
+
+    @Override
+    public CodeGroupDTO getCodeGroup(String groupCode) {
+
+        return codeGroupMapper.selectByGroupCode(groupCode).orElseThrow(() -> new BusinessException(ErrorCode.NO_DATA_FOUND));
+    }
 }
