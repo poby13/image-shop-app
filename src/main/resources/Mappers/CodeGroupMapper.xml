@@ -4,5 +4,39 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.co.cofile.sbimgshop.codegroups.CodeGroupMapper">
+    <sql id="searchCondition">
+        <where>
+            <if test="condition.groupCode != null and condition.groupCode != ''">
+                AND group_code LIKE CONCAT('%', #{condition.groupCode}, '%')
+            </if>
+            <if test="condition.groupName != null and condition.groupName != ''">
+                AND group_name LIKE CONCAT('%', #{condition.groupName}, '%')
+            </if>
+            <if test="condition.startDate != null">
+                AND created_at >= #{condition.startDate}
+            </if>
+            <if test="condition.endDate != null">
+                AND created_at &lt;= #{condition.endDate}
+            </if>
+            <if test="condition.searchKeyword != null and condition.searchKeyword != ''">
+                AND (group_code LIKE CONCAT('%', #{condition.searchKeyword}, '%')
+                OR group_name LIKE CONCAT('%', #{condition.searchKeyword}, '%'))
+            </if>
+            <if test="condition.groupCodes != null and condition.groupCodes.size() > 0">
+                AND group_code IN
+                <foreach collection="condition.groupCodes" item="code" open="(" separator="," close=")">
+                    #{code}
+                </foreach>
+            </if>
+        </where>
+    </sql>
 
+    <select id="findByCondition" resultType="kr.co.cofile.sbimgshop.codegroups.CodeGroupDTO">
+        SELECT * FROM code_group
+        <include refid="searchCondition"/>
+        <if test="condition.sortField != null and condition.sortDirection != null">
+            ORDER BY ${condition.sortField} ${condition.sortDirection}
+        </if>
+        LIMIT #{offset}, #{size}
+    </select>
 </mapper>

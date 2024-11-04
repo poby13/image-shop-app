@@ -32,7 +32,11 @@ public class CodeGroupServiceImpl implements CodeGroupService {
         int totalElements = codeGroupMapper.countTotal();
         int totalPages = (int) Math.ceil((double) totalElements / size);
 
-        List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.findByCondition(offset, size);
+        CodeGroupSearchCondition condition = CodeGroupSearchCondition.builder()
+                //.groupCode("001")
+                .build();
+
+        List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.findByCondition(condition, offset, size);
 
         return PageDTO.<CodeGroupDTO>builder()
                 .page(page)
