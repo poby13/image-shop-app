@@ -1,3 +1,6 @@
+// 상수값 지정
+const PAGE_SIZE = 10; // 페이지네이션 페이지당 아이템 수
+
 const formControlEl = $('.form-control');
 const errorMessageEl = $('.error-message');
 
@@ -28,3 +31,17 @@ formControlEl.on('input', function () {
     $(this).removeClass('is-invalid');
     $(`#${this.id.replace('Id', '')}Error`).hide().text('');
 });
+
+// URL 파라미터 가져오는 함수
+function getUrlParameter(name, defaultValue) {
+      const urlParams = new URLSearchParams(window.location.search);
+    const value = urlParams.get(name);
+
+    // 값이 없거나 숫자가 아닌 경우 기본값 반환
+    if (!value || isNaN(value)) {
+        return defaultValue;
+    }
+
+    // 숫자로 변환하여 반환
+    return parseInt(value);
+}
