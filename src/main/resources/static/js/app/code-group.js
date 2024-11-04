@@ -32,7 +32,7 @@ $(document).ready(function () {
         if (!groupName) {
             errors.groupName = messages.required.groupName;
             hasError = true;
-        } else if (groupName.length !== 3) {
+        } else if (groupName.length >= 3 && groupName <= 30) {
             errors.groupName = messages.size.groupName;
             hasError = true;
         }

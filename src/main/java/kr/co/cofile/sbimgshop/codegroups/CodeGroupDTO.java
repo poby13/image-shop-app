@@ -18,7 +18,7 @@ public class CodeGroupDTO {
     private String groupCode;
 
     @NotBlank
-    @Size(min = 3, max = 3)
+    @Size(min = 3, max = 30)
     private String groupName;
 
     private String useYn = "Y";
