@@ -31,12 +31,29 @@
         </where>
     </sql>
 
+    <sql id="sortCondition">
+        <if test="condition != null and condition.sortField != null and condition.sortDirection != null">
+            <choose>
+                <when test="condition.sortField == 'group_code'">ORDER BY group_code</when>
+                <when test="condition.sortField == 'group_name'">ORDER BY group_name</when>
+                <when test="condition.sortField == 'created_at'">ORDER BY created_at</when>
+                <otherwise>ORDER BY group_code</otherwise>
+            </choose>
+            <choose>
+                <when test="condition.sortDirection == 'ASC'">ASC</when>
+                <otherwise>DESC</otherwise>
+            </choose>
+        </if>
+    </sql>
+
     <select id="findByCondition" resultType="kr.co.cofile.sbimgshop.codegroups.CodeGroupDTO">
         SELECT * FROM code_group
         <include refid="searchCondition"/>
-        <if test="condition.sortField != null and condition.sortDirection != null">
+        <!-- SQL 인젝션 취약점 해결 -->
+        <!--if test="condition.sortField != null and condition.sortDirection != null">
             ORDER BY ${condition.sortField} ${condition.sortDirection}
-        </if>
+        </if-->
+        <include refid="sortCondition"/>
         LIMIT #{offset}, #{size}
     </select>
 </mapper>
