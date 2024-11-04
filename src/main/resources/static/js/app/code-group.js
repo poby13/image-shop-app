@@ -1,8 +1,16 @@
 $(document).ready(function () {
     $("#codeGroupListId").click(function () {
+        // 페이지와 사이즈 가져오기 (기본값: page=1, size=10)
+        const page = getUrlParameter('page', 1);
+        const size = getUrlParameter('size', PAGE_SIZE);
+
+        // 유효성 검사
+        if (page < 1) page = 1;
+        if (size < 1) size = PAGE_SIZE;
+
         console.log("codeGroupList");
 
-        fetch('/codegroups?page='+1+'&size='+10, {
+        fetch(`/codegroups?page=${page}&size=${size}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
