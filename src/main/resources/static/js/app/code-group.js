@@ -1,6 +1,31 @@
 $(document).ready(function () {
     $("#codeGroupListId").click(function () {
         console.log("codeGroupList");
+
+        fetch('/codegroups?page='+1+'&size='+10, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw errorData;
+                    })
+                }
+                return response.json()
+            })
+            .then(data => console.log(data))
+            .catch(error => {
+                console.error('Error:', error);
+                if (error.errors) {
+                    showErrors(error.errors);
+                } else {
+                    // 일반적인 에러 처리
+                    alert(error.message || messages.process.fail);
+                }
+            });
     })
 
     $("#codeGroupReadId").click(function () {
@@ -64,7 +89,7 @@ $(document).ready(function () {
                         throw errorData;
                     })
                 }
-                response.json()
+                return response.json()
             })
             .then(data => console.log(data))
             .catch(error => {

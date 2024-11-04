@@ -1,17 +1,15 @@
 package kr.co.cofile.sbimgshop.codegroups;
 
 import jakarta.validation.Valid;
-import kr.co.cofile.sbimgshop.common.exception.BusinessException;
+import kr.co.cofile.sbimgshop.common.dto.PageDTO;
 import kr.co.cofile.sbimgshop.common.exception.CustomValidationException;
 import kr.co.cofile.sbimgshop.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,4 +33,13 @@ public class CodeGroupController {
         return ResponseEntity.ok(codeGroupDTO);
     }
 
+    @GetMapping
+    public ResponseEntity<PageDTO<CodeGroupDTO>> getCodeGroups(@RequestParam(name="page", defaultValue = "1") int page,
+                                                      @RequestParam(name="size", defaultValue = "10") int size,
+                                                      Model model) {
+
+        PageDTO<CodeGroupDTO> pageDTO = codeGroupService.getCodeGroups(page, size);
+
+        return ResponseEntity.ok(pageDTO);
+    }
 }
