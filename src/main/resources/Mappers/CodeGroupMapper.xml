@@ -56,4 +56,18 @@
         <include refid="sortCondition"/>
         LIMIT #{offset}, #{size}
     </select>
+
+    <!-- 코드 그룹 부분 업데이트 -->
+    <update id="partialUpdateCodeGroup" parameterType="map">
+        UPDATE code_group
+        <set>
+            <if test="updates.groupName != null">
+                group_name = #{updates.groupName},
+            </if>
+            <if test="updates.useYn != null">
+                use_yn = #{updates.useYn},
+            </if>
+        </set>
+        WHERE group_code = #{groupCode}
+    </update>
 </mapper>
