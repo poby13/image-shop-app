@@ -8,6 +8,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,17 +18,17 @@ public class CodeGroupServiceImpl implements CodeGroupService {
 
 
     @Override
-    public void createCodeGroup(CodeGroupDTO codeGroupDTO) {
+    public void createCodeGroup(CreateCodeGroupRequest createCodeGroupRequest) {
         // TODO DuplicateKeyException
         try {
-            codeGroupMapper.insert(codeGroupDTO);
+            codeGroupMapper.insert(createCodeGroupRequest);
         } catch (DuplicateKeyException e) {
             throw new BusinessException(ErrorCode.DUPLICATE_KEY, e);
         }
     }
 
     @Override
-    public PageDTO getCodeGroups(int page, int size) {
+    public PageDTO<CodeGroupResponse> getCodeGroups(int page, int size) {
         int offset = (page - 1) * size;
         int totalElements = codeGroupMapper.countTotal();
         int totalPages = (int) Math.ceil((double) totalElements / size);
@@ -36,19 +37,24 @@ public class CodeGroupServiceImpl implements CodeGroupService {
                 //.groupCode("001")
                 .build();
 
-        List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.seletByCondition(condition, offset, size);
+        List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.selectByCondition(condition, offset, size);
 
-        return PageDTO.<CodeGroupDTO>builder()
+        // DTO를 Response로 변환
+        List<CodeGroupResponse> responses = codeGroupDTOS.stream()
+                .map(CodeGroupResponse::from)
+                .collect(Collectors.toList());
+
+        return PageDTO.<CodeGroupResponse>builder()
                 .page(page)
                 .size(size)
                 .totalPages(totalPages)
                 .totalElements(totalElements)
-                .content(codeGroupDTOS)
+                .content(responses)
                 .build();
     }
 
     @Override
-    public PageDTO getCodeGroups(String codeGroup, String codeName, int page, int size) {
+    public PageDTO<CodeGroupResponse> getCodeGroups(String codeGroup, String codeName, int page, int size) {
         int offset = (page - 1) * size;
         int totalElements = codeGroupMapper.countTotal();
         int totalPages = (int) Math.ceil((double) totalElements / size);
@@ -58,14 +64,19 @@ public class CodeGroupServiceImpl implements CodeGroupService {
                 .groupName(codeName)
                 .build();
 
-        List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.seletByCondition(condition, offset, size);
+        List<CodeGroupDTO> codeGroupDTOS = codeGroupMapper.selectByCondition(condition, offset, size);
 
-        return PageDTO.<CodeGroupDTO>builder()
+        // DTO를 Response로 변환
+        List<CodeGroupResponse> codeGroupResponses = codeGroupDTOS.stream()
+                .map(CodeGroupResponse::from)
+                .collect(Collectors.toList());
+
+        return PageDTO.<CodeGroupResponse>builder()
                 .page(page)
                 .size(size)
                 .totalPages(totalPages)
                 .totalElements(totalElements)
-                .content(codeGroupDTOS)
+                .content(codeGroupResponses)
                 .build();
     }
 

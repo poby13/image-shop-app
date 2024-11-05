@@ -11,6 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -22,46 +26,68 @@ public class CodeGroupController {
     // TODO NoResourceFoundException: No static resource codegroups.
 
     @PostMapping
-    public ResponseEntity<CodeGroupDTO> createCodeGroup(@Valid @RequestBody CodeGroupDTO codeGroupDTO,
-                                                        BindingResult bindingResult) {
-        log.info("register: {}", codeGroupDTO);
+    public ResponseEntity<CodeGroupResponse> createCodeGroup(@Valid @RequestBody CreateCodeGroupRequest createCodeGroupRequest,
+                                                             BindingResult bindingResult) {
+        log.info("register: {}", createCodeGroupRequest);
 
         if (bindingResult.hasErrors()) {
             throw new CustomValidationException(ErrorCode.VALIDATION_ERROR, bindingResult);
         }
 
-        codeGroupService.createCodeGroup(codeGroupDTO);
+        codeGroupService.createCodeGroup(createCodeGroupRequest);
 
-        return ResponseEntity.ok(codeGroupDTO);
+        CodeGroupDTO codeGroupDTO = codeGroupService.getCodeGroup(createCodeGroupRequest.getGroupCode());
+        CodeGroupResponse response = CodeGroupResponse.from(codeGroupDTO);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<PageDTO<CodeGroupDTO>> findCodeGroups(@RequestParam(name="page", defaultValue = "1") int page,
-                                                                @RequestParam(name="size", defaultValue = "10") int size,
-                                                                Model model) {
+    public ResponseEntity<PageDTO<CodeGroupResponse>> findCodeGroups(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                                     @RequestParam(name = "size", defaultValue = "10") int size) {
 
-        PageDTO<CodeGroupDTO> pageDTO = codeGroupService.getCodeGroups(page, size);
+        PageDTO<CodeGroupResponse> pageDTO = codeGroupService.getCodeGroups(page, size);
 
         return ResponseEntity.ok(pageDTO);
     }
 
     // 검색
     @GetMapping("/search")
-    public ResponseEntity<PageDTO<CodeGroupDTO>> findCodeGroups(
+    public ResponseEntity<PageDTO<CodeGroupResponse>> findCodeGroups(
             @RequestParam(value = "groupCode", required = false) String groupCode,
             @RequestParam(value = "groupName", required = false) String groupName,
-            @RequestParam(name="page", defaultValue = "1") int page,
-                                                               @RequestParam(name="size", defaultValue = "10") int size,
-                                                               Model model) {
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
-        PageDTO<CodeGroupDTO> pageDTO = codeGroupService.getCodeGroups(groupCode, groupName, page, size);
+        PageDTO<CodeGroupResponse> pageDTO = codeGroupService.getCodeGroups(groupCode, groupName, page, size);
+
 
         return ResponseEntity.ok(pageDTO);
     }
 
     @GetMapping("/{groupCode}")
-    public ResponseEntity<CodeGroupDTO> getCodeGroup(@PathVariable("groupCode") String groupCode) {
+    public ResponseEntity<CodeGroupResponse> getCodeGroup(@PathVariable("groupCode") String groupCode) {
 
-         return ResponseEntity.ok(codeGroupService.getCodeGroup(groupCode));
+        return ResponseEntity.ok(CodeGroupResponse.from(codeGroupService.getCodeGroup(groupCode)));
     }
+
+    // 전체 업데이트 (PUT)
+//    @PutMapping("/{groupCode}")
+//    public ResponseEntity<CodeGroupDTO> updateCodeGroup(
+//            @PathVariable String groupCode,
+//            @RequestBody @Valid UpdateCodeGroupRequest request
+//    ) {
+//        CodeGroupDTO updatedGroup = codeGroupService.update(groupCode, request);
+//        return ResponseEntity.ok(updatedGroup);
+//    }
+
+    // 부분 업데이트 (PATCH)
+//    @PatchMapping("/{groupCode}")
+//    public ResponseEntity<CodeGroupDTO> partialUpdateCodeGroup(
+//            @PathVariable String groupCode,
+//            @RequestBody Map<String, Object> updates
+//    ) {
+//        CodeGroupDTO updatedGroup = codeGroupService.partialUpdate(groupCode, updates);
+//        return ResponseEntity.ok(updatedGroup);
+//    }
 }

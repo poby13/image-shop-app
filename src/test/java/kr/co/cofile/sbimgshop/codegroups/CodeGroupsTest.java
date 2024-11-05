@@ -18,15 +18,15 @@ public class CodeGroupsTest {
     void createCodeGroup() {
         int size = 49; // 추가 건수
         for (int i = 1; i <= size; i++) {
-            CodeGroupDTO codeGroupDTO = new CodeGroupDTO();
+            CreateCodeGroupRequest createCodeGroupRequest = new CreateCodeGroupRequest();
             String groupCode = String.format("%03d", i);
             String groupName = generateGroupName(i);
 
-            codeGroupDTO.setGroupCode(groupCode);
-            codeGroupDTO.setGroupName(groupName);
+            createCodeGroupRequest.setGroupCode(groupCode);
+            createCodeGroupRequest.setGroupName(groupName);
 
             if (!codeGroupMapper.exists(groupCode)) {
-                codeGroupMapper.insert(codeGroupDTO);
+                codeGroupMapper.insert(createCodeGroupRequest);
                 log.info("코드그룹: {}, 코드이름: {}", groupCode, groupName);
             } else {
                 log.warn("코드그룹이 존재하여 스킵: {}", groupCode);
