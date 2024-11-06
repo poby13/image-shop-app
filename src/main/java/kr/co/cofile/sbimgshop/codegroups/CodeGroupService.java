@@ -10,7 +10,7 @@ public interface CodeGroupService {
 //    List<CodeGroupDTO> findBy
     PageDTO<CodeGroupResponse> getCodeGroups(int page, int size);
 
-    PageDTO<CodeGroupResponse> getCodeGroups(String codeGroup, String codeName, int page, int size);
+    PageDTO<CodeGroupResponse> getCodeGroups(String codeGroup, String codeName, String useYn, int page, int size);
 
     CodeGroupDTO getCodeGroup(String groupCode);
 

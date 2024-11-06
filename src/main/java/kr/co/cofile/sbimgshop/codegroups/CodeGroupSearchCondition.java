@@ -13,6 +13,7 @@ import java.util.List;
 public class CodeGroupSearchCondition {
     private String groupCode;
     private String groupName;
+    private String useYn;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String searchKeyword;

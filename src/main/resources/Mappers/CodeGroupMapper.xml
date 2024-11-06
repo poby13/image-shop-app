@@ -12,6 +12,9 @@
             <if test="condition.groupName != null and condition.groupName != ''">
                 AND group_name LIKE CONCAT('%', #{condition.groupName}, '%')
             </if>
+            <if test="condition.useYn!= null and condition.useYn!= ''">
+                AND use_yn LIKE CONCAT('%', #{condition.useYn}, '%')
+            </if>
             <if test="condition.startDate != null">
                 AND created_at >= #{condition.startDate}
             </if>
