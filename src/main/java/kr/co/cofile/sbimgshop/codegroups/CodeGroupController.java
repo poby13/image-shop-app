@@ -199,11 +199,14 @@ public class CodeGroupController {
      */
     // 검색
     @GetMapping("/search")
-    public ResponseEntity<PageDTO<CodeGroupResponse>> findCodeGroups(@RequestParam(value = "groupCode", required = false) String groupCode,
-                                                                     @RequestParam(value = "groupName", required = false) String groupName,
-                                                                     @RequestParam(value = "useYn", required = false) String useYn,
+    public ResponseEntity<PageDTO<CodeGroupResponse>> findCodeGroups(@Valid @ModelAttribute(value = "searchRequest") CodeGroupSearchRequest searchRequest,
+                                                                     BindingResult bindingResult,
                                                                      @RequestParam(name = "page", defaultValue = "1") int page,
                                                                      @RequestParam(name = "size", defaultValue = "10") int size) {
+
+        if (bindingResult.hasErrors()) {
+            throw new CustomValidationException(ErrorCode.VALIDATION_ERROR, bindingResult);
+        }
 
         try {
             // 페이지 파라미터 유효성 검사
@@ -219,7 +222,7 @@ public class CodeGroupController {
                 validatedSize = size;
             }
 
-            PageDTO<CodeGroupResponse> pageDTO = codeGroupService.getCodeGroups(groupCode, groupName, useYn, validatedPage, validatedSize);
+            PageDTO<CodeGroupResponse> pageDTO = codeGroupService.getCodeGroups(searchRequest, validatedPage, validatedSize);
             return ResponseEntity.ok(pageDTO);
         } catch (MethodArgumentTypeMismatchException e) {
             throw new BusinessException(ErrorCode.VALIDATION_ERROR, e);
