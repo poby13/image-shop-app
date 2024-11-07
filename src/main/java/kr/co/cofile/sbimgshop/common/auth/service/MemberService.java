@@ -16,14 +16,15 @@ public class MemberService {
 
     private final MemberMapper memberMapper;
 
-    public boolean existsByUserId(String userId) {
-        return memberMapper.selectByUserId(userId) != null;
+    public boolean existsMemberByUserId(String userId) {
+        return memberMapper.selectMemberByUserId(userId) != null;
     }
 
     @Transactional
     public void signup(MemberDTO member) {
-        memberMapper.create(member);
-
+        // 회원정보 추가
+        memberMapper.createMember(member);
+        // 회원권한 추가
         MemberAuthDTO memberAuth = MemberAuthDTO.builder()
                 .userNo(member.getUserNo())
                 .auth("ROLE_USER")
@@ -31,12 +32,11 @@ public class MemberService {
         memberMapper.createAuth(memberAuth);
     }
 
-    @Transactional
     public void updateLastLogin(Long userNo) {
-        memberMapper.selectLastLogin(userNo);
+        memberMapper.updateLastLogin(userNo);
     }
 
-    public Optional<MemberDTO> getUserByUsername(String userName) {
-        return memberMapper.selectByUsername(userName);
+    public Optional<MemberDTO> getMemberByUsername(String userName) {
+        return memberMapper.selectMemberByUsername(userName);
     }
 }

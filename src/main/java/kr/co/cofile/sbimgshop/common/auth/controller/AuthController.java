@@ -1,6 +1,8 @@
-package kr.co.cofile.sbimgshop.common.auth;
+package kr.co.cofile.sbimgshop.common.auth.controller;
 
 import jakarta.validation.Valid;
+import kr.co.cofile.sbimgshop.common.auth.dto.CustomUserDetails;
+import kr.co.cofile.sbimgshop.common.auth.jwt.JwtTokenProvider;
 import kr.co.cofile.sbimgshop.common.auth.dto.*;
 import kr.co.cofile.sbimgshop.common.auth.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<JsonResponse> signup(@Valid @RequestBody SignupRequest request) {
-        if (memberService.existsByUserId(request.getUserId())) {
+        if (memberService.existsMemberByUserId(request.getUserId())) {
             throw new DuplicateKeyException("이미 사용중인 아이디입니다.");
         }
 
@@ -78,7 +80,7 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
-        MemberDTO memberDTO = memberService.getUserByUsername(user.getUsername())
+        MemberDTO memberDTO = memberService.getMemberByUsername(user.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return ResponseEntity.ok(JsonResponse.builder()

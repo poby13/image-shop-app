@@ -1,6 +1,6 @@
 package kr.co.cofile.sbimgshop.common.auth.service;
 
-import kr.co.cofile.sbimgshop.common.auth.CustomUserDetails;
+import kr.co.cofile.sbimgshop.common.auth.dto.CustomUserDetails;
 import kr.co.cofile.sbimgshop.common.auth.mapper.MemberMapper;
 import kr.co.cofile.sbimgshop.common.auth.dto.MemberDTO;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +17,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        MemberDTO member = memberMapper.selectByUserId(userId);
+        MemberDTO member = memberMapper.selectMemberByUserId(userId);
         if (member == null) {
-            throw new UsernameNotFoundException("User not found with userId: " + userId);
+            // TODO 사용자 예외처리
+            throw new UsernameNotFoundException("사용자 아이디를 찾을 수 없음: " + userId);
         }
         return new CustomUserDetails(member);
     }

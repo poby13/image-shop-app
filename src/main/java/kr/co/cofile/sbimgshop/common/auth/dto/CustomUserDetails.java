@@ -1,6 +1,5 @@
-package kr.co.cofile.sbimgshop.common.auth;
+package kr.co.cofile.sbimgshop.common.auth.dto;
 
-import kr.co.cofile.sbimgshop.common.auth.dto.MemberDTO;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +10,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
+
     private final MemberDTO member;
     private final Collection<? extends GrantedAuthority> authorities;
 

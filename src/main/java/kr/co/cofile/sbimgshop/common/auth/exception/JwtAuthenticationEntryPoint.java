@@ -1,4 +1,4 @@
-package kr.co.cofile.sbimgshop.common.auth;
+package kr.co.cofile.sbimgshop.common.auth.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +12,7 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    // TODO 사용자 예외처리
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,

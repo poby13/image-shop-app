@@ -21,7 +21,7 @@
         </collection>
     </resultMap>
 
-    <select id="selectByUserId" resultMap="memberMap">
+    <select id="selectMemberByUserId" resultMap="memberMap">
         SELECT m.*, ma.auth_no, ma.auth
         FROM member m
         LEFT JOIN member_auth ma ON m.user_no = ma.user_no AND ma.is_deleted = FALSE
@@ -38,23 +38,4 @@
         AND m.is_deleted = FALSE
         AND m.status = 'ACTIVE'
     </select>
-
-    <insert id="create" useGeneratedKeys="true" keyProperty="userNo">
-        INSERT INTO member (
-        user_id, user_pw, user_name, job_group_code, job, status
-        ) VALUES (
-        #{userId}, #{userPw}, #{userName}, #{jobGroupCode}, #{job}, 'ACTIVE'
-        )
-    </insert>
-
-    <insert id="craeteAuth">
-        INSERT INTO member_auth (user_no, auth)
-        VALUES (#{userNo}, #{auth})
-    </insert>
-
-    <update id="updateLastLogin">
-        UPDATE member
-        SET last_login_at = CURRENT_TIMESTAMP
-        WHERE user_no = #{userNo}
-    </update>
 </mapper>
