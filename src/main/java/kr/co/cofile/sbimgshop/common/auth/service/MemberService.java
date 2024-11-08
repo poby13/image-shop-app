@@ -32,6 +32,7 @@ public class MemberService {
         memberMapper.createAuth(memberAuth);
     }
 
+    @Transactional
     public void updateLastLogin(Long userNo) {
         memberMapper.updateLastLogin(userNo);
     }

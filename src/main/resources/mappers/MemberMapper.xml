@@ -30,7 +30,7 @@
         AND m.status = 'ACTIVE'
     </select>
 
-    <select id="selectByUsername" resultMap="memberMap">
+    <select id="selectMemberByUsername" resultMap="memberMap">
         SELECT m.*, ma.auth_no, ma.auth
         FROM member m
         LEFT JOIN member_auth ma ON m.user_no = ma.user_no AND ma.is_deleted = FALSE
