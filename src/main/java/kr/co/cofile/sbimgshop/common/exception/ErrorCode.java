@@ -11,6 +11,7 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(405, "C002", "Invalid HTTP Method"),
     INVALID_TYPE_VALUE(400, "C004", "Invalid Type Value"),
     MISSING_REQUEST_PARAMETER(400, "C005", "Missing Request Parameter"),
+    MISSING_REQUEST_Body(400, "C006", "Missing Request Body"),
 
     // Authentication & Authorization Errors (400, 401, 403)
     UNAUTHORIZED(401, "A001", "Unauthorized Access"),
@@ -18,6 +19,7 @@ public enum ErrorCode {
     ACCESS_DENIED(403, "A003", "Access Denied"),
     INVALID_CREDENTIALS(401, "A004", "Invalid Username or Password"),
     TOKEN_EXPIRED(401, "A005", "Token Has Expired"),
+    USER_NOT_FOUND(404, "A006", "User Not Found"),
 
     // Database & MyBatis Errors (500)
     DATABASE_ERROR(500, "D001", "Database Error Occurred"),
