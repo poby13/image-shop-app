@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kr.co.cofile.sbimgshop.common.auth.dto.*;
 import kr.co.cofile.sbimgshop.common.auth.jwt.JwtTokenProvider;
 import kr.co.cofile.sbimgshop.common.auth.service.MemberService;
+import kr.co.cofile.sbimgshop.common.exception.BusinessException;
 import kr.co.cofile.sbimgshop.common.exception.CustomValidationException;
 import kr.co.cofile.sbimgshop.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -85,30 +86,55 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JsonResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<JsonResponse> login(@Valid @RequestBody LoginRequest request, BindingResult bindingResult) {
+
+
+        if (bindingResult.hasErrors()) {
+            throw new CustomValidationException(ErrorCode.VALIDATION_ERROR, bindingResult);
+        }
+
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.getUserId(), request.getUserPw());
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // 3. 인증 과정 예외
+        // - BadCredentialsException: 잘못된 비밀번호
+        // - UsernameNotFoundException: 존재하지 않는 사용자
+        // - LockedException: 계정 잠김
+        // - DisabledException: 비활성화된 계정
+        // - AccountExpiredException: 만료된 계정
+        try {
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = tokenProvider.createToken(authentication);
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        MemberDTO member = userDetails.getMember();
+            String jwt = tokenProvider.createToken(authentication);
 
-        memberService.updateLastLogin(member.getUserNo());
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            MemberDTO member = userDetails.getMember();
 
-        TokenResponse tokenResponse = TokenResponse.builder()
-                .token(jwt)
-                .userId(member.getUserId())
-                .userName(member.getUserName())
-                .build();
+            memberService.updateLastLogin(member.getUserNo());
 
-        return ResponseEntity.ok(JsonResponse.builder()
-                .success(true)
-                .message("로그인이 완료되었습니다.")
-                .data(tokenResponse)
-                .build());
+            TokenResponse tokenResponse = TokenResponse.builder()
+                    .token(jwt)
+                    .userId(member.getUserId())
+                    .userName(member.getUserName())
+                    .build();
+
+            return ResponseEntity.ok(JsonResponse.builder()
+                    .success(true)
+                    .message("로그인이 완료되었습니다.")
+                    .data(tokenResponse)
+                    .build());
+        } catch (BadCredentialsException e) {
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        } catch (UsernameNotFoundException e) {
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        } catch (LockedException e) {
+            throw new BusinessException(ErrorCode.ACCESS_DENIED, "계정이 잠겼습니다.");
+        } catch (DisabledException e) {
+            throw new BusinessException(ErrorCode.ACCESS_DENIED, "비활성화된 계정입니다.");
+        } catch (AccountExpiredException e) {
+            throw new BusinessException(ErrorCode.ACCESS_DENIED, "만료된 계정입니다.");
+        }
     }
 
     @GetMapping("/me")
