@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Mapper
 public interface MemberMapper {
-    MemberDTO selectMemberByUserId(String userId);
+    Optional<MemberDTO> selectMemberByUserId(String userId);
 
     @Insert("INSERT INTO member (user_id, user_pw, user_name, job_group_code, job, status) " +
             "VALUES (#{userId}, #{userPw}, #{userName}, #{jobGroupCode}, #{job}, 'ACTIVE')")
